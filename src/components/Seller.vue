@@ -26,7 +26,7 @@ export default {
   methods: {
     // 初始化echartInstance对象
     initChart() {
-      this.chartInstance = this.$echarts.init(this.$refs.seller_ref)
+      this.chartInstance = this.$echarts.init(this.$refs.seller_ref, 'chalk')
       // 对图表对象进行鼠标事件的监听
       this.chartInstance.on('mouseover', () => {
         clearInterval(this.timerId)
@@ -61,6 +61,21 @@ export default {
         return item.value
       })
       const option = {
+        title: {
+          text: '▎ 商家销售统计',
+          textStyle: {
+            fontSize: 66
+          },
+          left: 20,
+          top: 20
+        },
+        grid: {
+          top: '20%',
+          left: '3%',
+          right: '6%',
+          bottom: '3%',
+          containLabel: true //从坐标轴文字开始计算距离
+        },
         xAxis: {
           type: 'value'
         },

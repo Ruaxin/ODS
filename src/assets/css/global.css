@@ -54,3 +54,7 @@ table {
   height: 100%;
   overflow: hidden;
 }
+
+canvas {
+  border-radius: 20px;
+}

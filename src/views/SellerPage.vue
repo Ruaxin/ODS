@@ -7,6 +7,7 @@
 </template>
 
 <script>
+// import Seller from '@/components/demo'
 import Seller from '@/components/Seller'
 
 export default {

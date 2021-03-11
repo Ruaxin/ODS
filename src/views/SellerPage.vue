@@ -7,7 +7,8 @@
 </template>
 
 <script>
-// import Seller from '@/components/demo'
+// 测试
+// import Seller from '@/components/SellerT'
 import Seller from '@/components/Seller'
 
 export default {

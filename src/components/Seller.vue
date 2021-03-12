@@ -27,6 +27,74 @@ export default {
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.seller_ref, 'chalk')
+      // 对图表初始化配置的控制
+      const initOption={
+        title: {
+          text: '▎ 商家销售统计',
+          textStyle: {
+            fontSize: 66
+          },
+          left: 20,
+          top: 20
+        },
+        grid: {
+          top: '20%',
+          left: '3%',
+          right: '6%',
+          bottom: '3%',
+          containLabel: true //从坐标轴文字开始计算距离
+        },
+        xAxis: {
+          type: 'value'
+        },
+        yAxis: {
+          type: 'category',
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line',
+            z: 0,
+            lineStyle: {
+              width: 66,
+              color: '#2D3443'
+            }
+          }
+        },
+        series: [
+          {
+            type: 'bar',
+            barWidth: 66,
+            label: {
+              show: true,
+              position: 'right',
+              color: 'white'
+            },
+            itemStyle: {
+              barBorderRadius: [0, 33, 33, 0],
+              // 指明颜色渐变的方向
+              // 指明不同百分百之下颜色的值
+              // color:new this.$echarts.graphic.LinearGradient(0,0,1,0,[
+              //   {offset:0,color:'#5052EE'},
+              //   {offset:1,color:'#AB6EE5'}
+              // ])
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 1,
+                y2: 0,
+                colorStops: [{
+                  offset: 0, color: '#5052EE' // 0% 处的颜色
+                }, {
+                  offset: 1, color: '#AB6EE5' // 100% 处的颜色
+                }],
+              }
+            }
+          }
+        ]
+      }
+      this.chartInstance.setOption(initOption)
       // 对图表对象进行鼠标事件的监听
       this.chartInstance.on('mouseover', () => {
         clearInterval(this.timerId)
@@ -60,75 +128,17 @@ export default {
       const sellerValues = showData.map((item) => {
         return item.value
       })
-      const option = {
-        title: {
-          text: '▎ 商家销售统计',
-          textStyle: {
-            fontSize: 66
-          },
-          left: 20,
-          top: 20
-        },
-        grid: {
-          top: '20%',
-          left: '3%',
-          right: '6%',
-          bottom: '3%',
-          containLabel: true //从坐标轴文字开始计算距离
-        },
-        xAxis: {
-          type: 'value'
-        },
+      const dataOption = {
         yAxis: {
-          type: 'category',
           data: sellerNames
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'line',
-            z: 0,
-            lineStyle: {
-              width: 66,
-              color: '#2D3443'
-            }
-          }
         },
         series: [
           {
-            type: 'bar',
             data: sellerValues,
-            barWidth: 66,
-            label: {
-              show: true,
-              position: 'right',
-              color: 'white'
-            },
-            itemStyle: {
-              barBorderRadius: [0, 33, 33, 0],
-              // 指明颜色渐变的方向
-              // 指明不同百分百之下颜色的值
-              // color:new this.$echarts.graphic.LinearGradient(0,0,1,0,[
-              //   {offset:0,color:'#5052EE'},
-              //   {offset:1,color:'#AB6EE5'}
-              // ])
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 1,
-                y2: 0,
-                colorStops: [{
-                  offset: 0, color: '#5052EE' // 0% 处的颜色
-                }, {
-                  offset: 1, color: '#AB6EE5' // 100% 处的颜色
-                }],
-              }
-            }
           }
         ]
       }
-      this.chartInstance.setOption(option)
+      this.chartInstance.setOption(dataOption)
     },
     startInterval() {
       if (this.timerId) {

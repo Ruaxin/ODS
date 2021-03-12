@@ -24,7 +24,7 @@ export default {
     clearInterval(this.timerId)
   },
   methods: {
-    // 初始化echartInstance对象
+    // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.seller_ref, 'chalk')
       // 对图表对象进行鼠标事件的监听
@@ -83,10 +83,48 @@ export default {
           type: 'category',
           data: sellerNames
         },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line',
+            z: 0,
+            lineStyle: {
+              width: 66,
+              color: '#2D3443'
+            }
+          }
+        },
         series: [
           {
             type: 'bar',
-            data: sellerValues
+            data: sellerValues,
+            barWidth: 66,
+            label: {
+              show: true,
+              position: 'right',
+              color: 'white'
+            },
+            itemStyle: {
+              barBorderRadius: [0, 33, 33, 0],
+              // 指明颜色渐变的方向
+              // 指明不同百分百之下颜色的值
+              // color:new this.$echarts.graphic.LinearGradient(0,0,1,0,[
+              //   {offset:0,color:'#5052EE'},
+              //   {offset:1,color:'#AB6EE5'}
+              // ])
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 1,
+                y2: 0,
+                colorStops: [{
+                  offset: 0, color: '#5052EE' // 0% 处的颜色
+                }, {
+                  offset: 1, color: '#AB6EE5' // 100% 处的颜色
+                }],
+              }
+            }
           }
         ]
       }

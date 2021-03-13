@@ -19,21 +19,22 @@ export default {
   mounted() {
     this.initChart()
     this.getData()
+    window.addEventListener('resize', this.screenAdapter)
+    this.screenAdapter()
   },
   destroyed() {
     clearInterval(this.timerId)
+    window.removeEventListener('resize', this.screenAdapter)
   },
   methods: {
     // 初始化echartsInstance对象
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.seller_ref, 'chalk')
       // 对图表初始化配置的控制
-      const initOption={
+      const initOption = {
         title: {
           text: '▎ 商家销售统计',
-          textStyle: {
-            fontSize: 66
-          },
+          textStyle: {},
           left: 20,
           top: 20
         },
@@ -56,7 +57,6 @@ export default {
             type: 'line',
             z: 0,
             lineStyle: {
-              width: 66,
               color: '#2D3443'
             }
           }
@@ -64,14 +64,12 @@ export default {
         series: [
           {
             type: 'bar',
-            barWidth: 66,
             label: {
               show: true,
               position: 'right',
               color: 'white'
             },
             itemStyle: {
-              barBorderRadius: [0, 33, 33, 0],
               // 指明颜色渐变的方向
               // 指明不同百分百之下颜色的值
               // color:new this.$echarts.graphic.LinearGradient(0,0,1,0,[
@@ -140,6 +138,7 @@ export default {
       }
       this.chartInstance.setOption(dataOption)
     },
+    // 数据循环
     startInterval() {
       if (this.timerId) {
         clearInterval(this.timerId)
@@ -151,6 +150,35 @@ export default {
         }
         this.updateChart()
       }, 3000)
+    },
+    // 自适应屏幕大小
+    screenAdapter() {
+      const titleFontSize = this.$refs.seller_ref.offsetWidth / 100 * 4.6
+      const adapterOption = {
+        title: {
+          textStyle: {
+            fontSize: titleFontSize
+          },
+        },
+        tooltip: {
+          axisPointer: {
+            lineStyle: {
+              width: titleFontSize,
+            }
+          }
+        },
+        series: [
+          {
+            barWidth: titleFontSize,
+            itemStyle: {
+              barBorderRadius: [0, titleFontSize / 2, titleFontSize / 2, 0],
+            }
+          }
+        ]
+      }
+      this.chartInstance.setOption(adapterOption)
+      // 调用resize方法
+      this.chartInstance.resize()
     }
   }
 }

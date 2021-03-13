@@ -17,13 +17,66 @@ export default {
   mounted() {
     this.initChart()
     this.getData()
+    window.addEventListener('resize', this.screenAdapter)
+    this.screenAdapter()
   },
   destroyed() {
     clearInterval(this.timerId)
+    window.removeEventListener('resize', this.screenAdapter)
   },
   methods: {
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.seller_ref, 'chalk')
+      const initOption = {
+        title: {
+          text: '▎ 商家销售统计',
+          top: 20,
+          left: 20
+        },
+        grid: {
+          top: '20%',
+          left: '3%',
+          right: '6%',
+          bottom: '3%',
+          containLabel: true
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line',
+            z: 0,
+            lineStyle: {
+              color: '#2D3443'
+            }
+          }
+        },
+        xAxis: {type: 'value'},
+        yAxis: {type: 'category'},
+        series: [
+          {
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'right',
+              color: 'white'
+            },
+            itemStyle: {
+              color: {
+                type: 'line',
+                x: 0,
+                y: 0,
+                x2: 1,
+                y2: 0,
+                colorStops: [
+                  {offset: 0, color: '#5052EE'},
+                  {offset: 1, color: '#AB6EE5'},
+                ]
+              }
+            }
+          }
+        ]
+      }
+      this.chartInstance.setOption(initOption)
       this.chartInstance.on('mouseover', () => {clearInterval(this.timerId)})
       this.chartInstance.on('mouseout', () => {this.startInterval()})
     },
@@ -41,63 +94,13 @@ export default {
       const showData = this.allData.slice(start, end)
       const sellerNames = showData.map((item) => {return item.name})
       const sellerValues = showData.map((item) => {return item.value})
-      const option = {
-        title: {
-          text: '▎ 商家销售统计',
-          fontStyle: {
-            fontSize: 66
-          },
-          top: 20,
-          left: 20
-        },
-        grid: {
-          top: '20%',
-          left: '3%',
-          right: '6%',
-          bottom: '3%',
-          containLabel: true
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'line',
-            z: 0,
-            lineStyle: {
-              width: 66,
-              color: '#2D3443'
-            }
-          }
-        },
-        xAxis: {type: 'value'},
-        yAxis: {type: 'category', data: sellerNames},
+      const dataOption = {
+        yAxis: {data: sellerNames},
         series: [
-          {
-            type: 'bar',
-            data: sellerValues,
-            barWidth: 66,
-            label: {
-              show: true,
-              position: 'right',
-              color: 'white'
-            },
-            itemStyle: {
-              barBorderRadius: [0, 33, 33, 0],
-              color: {
-                type: 'line',
-                x: 0,
-                y: 0,
-                x2: 1,
-                y2: 0,
-                colorStops: [
-                  {offset: 0, color: '#5052EE'},
-                  {offset: 1, color: '#AB6EE5'},
-                ]
-              }
-            }
-          }
+          {data: sellerValues}
         ]
       }
-      this.chartInstance.setOption(option)
+      this.chartInstance.setOption(dataOption)
     },
     startInterval() {
       if (this.timerId) {
@@ -110,6 +113,33 @@ export default {
         }
         this.updateChart()
       }, 3000)
+    },
+    screenAdapter() {
+      const titleFontSize = this.$refs.seller_ref.offsetWidth / 100 * 4.6
+      const adapterOption = {
+        title: {
+          textStyle: {
+            fontSize: titleFontSize
+          },
+        },
+        tooltip: {
+          axisPointer: {
+            lineStyle: {
+              width: titleFontSize,
+            }
+          }
+        },
+        series: [
+          {
+            barWidth: titleFontSize,
+            itemStyle: {
+              barBorderRadius: [0, titleFontSize / 2, titleFontSize / 2, 0],
+            }
+          }
+        ]
+      }
+      this.chartInstance.setOption(adapterOption)
+      this.chartInstance.resize()
     }
   }
 }

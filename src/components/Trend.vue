@@ -37,6 +37,7 @@ export default {
     async getData() {
       const {data: ret} = await this.$http.get('trend')
       this.allData = ret
+      console.log(ret)
       this.updateChart()
     },
     updateChart() {
@@ -46,13 +47,22 @@ export default {
       const valueArr = this.allData.map.data
       const seriesArr = valueArr.map(item => {
         return {
+          name:item.name,
           type: 'line',
-          data: item.data
+          data: item.data,
+          stack: 'map' // 设置形态的值就能形成堆叠图
         }
+      })
+      // 图例的数据
+      const legendArr = valueArr.map(item => {
+        return item.name
       })
       const dataOption = {
         xAxis: {
           data: timeArr
+        },
+        legend: {
+          data: legendArr // series里一定要有name属性
         },
         series: seriesArr
       }

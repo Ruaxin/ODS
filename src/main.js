@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import './assets/css/global.css'
+import './assets/font/iconfont.css'
 // 基准路径的配置
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/'
 // 本地版

@@ -1,5 +1,14 @@
 <template>
   <div class="com-container">
+    <div class="title">
+      <span>{{ showTitle }}</span>
+      <span class="iconfont title-icon" @click="showChoice=!showChoice">&#xe6eb;</span>
+      <div class="select-con" v-show="showChoice">
+        <div class="select-item" v-for="item in selectTypes" :key="item.key" @click="handleSelect(item.key)">
+          {{ item.text }}
+        </div>
+      </div>
+    </div>
     <div class="com-chart" ref="trend_ref"></div>
   </div>
 </template>
@@ -10,6 +19,8 @@ export default {
     return {
       chartInstance: null,
       allData: null,
+      showChoice: false, // 是否显示可选性
+      choiceType: 'map' // 显示数据类型
     }
   },
   mounted() {
@@ -20,6 +31,24 @@ export default {
   },
   destroyed() {
     window.removeEventListener('resize', this.screenAdapter)
+  },
+  computed: {
+    selectTypes() {
+      if (!this.allData) {
+        return []
+      } else {
+        return this.allData.type.filter(item => {
+          return item.key !== this.choiceType
+        })
+      }
+    },
+    showTitle() {
+      if (!this.allData) {
+        return []
+      } else {
+        return this.allData[this.choiceType].title
+      }
+    }
   },
   methods: {
     initChart() {
@@ -74,13 +103,13 @@ export default {
       // 类目轴的数据
       const timeArr = this.allData.common.month
       // y轴的数据 series下的数据
-      const valueArr = this.allData.map.data
+      const valueArr = this.allData[this.choiceType].data
       const seriesArr = valueArr.map((item, index) => {
         return {
           name: item.name,
           type: 'line',
           data: item.data,
-          stack: 'map', // 设置形态的值就能形成堆叠图
+          stack: this.choiceType, // 设置相同的值就能形成堆叠图
           areaStyle: {
             color: {
               type: 'linear',
@@ -116,11 +145,32 @@ export default {
       const adapterOption = {}
       this.chartInstance.setOption(adapterOption)
       this.chartInstance.resize()
+    },
+    handleSelect(currentType) {
+      this.choiceType = currentType
+      this.updateChart()
+      this.showChoice = false
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.title {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  z-index: 10;
+  color: white;
 
+  .title-icon {
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
+  .select-item {
+    cursor: pointer;
+  }
+
+}
 </style>

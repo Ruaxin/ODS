@@ -1,5 +1,14 @@
 <template>
   <div class="com-container">
+    <div class="title" :style="comStyle">
+      <span>{{ '▎ ' + title }}</span>
+      <span class="iconfont title-icon" :style="comStyle" @click="showChoice = !showChoice">&#xe6eb;</span>
+      <div class="select-con" v-show="showChoice" :style="marginStyle">
+        <div class="select-item" v-for="item in selectTypes" :key="item.key" @click="handleSelect(item.key)">
+          {{ item.text }}
+        </div>
+      </div>
+    </div>
     <div class="com-chart" ref="trend_ref"></div>
   </div>
 </template>
@@ -9,7 +18,38 @@ export default {
   data() {
     return {
       chartInstance: null,
-      allData: null
+      allData: null,
+      dataType: 'map',
+      showChoice: false,
+      titleFontSize: 0
+    }
+  },
+  computed: {
+    selectTypes() {
+      if (!this.allData) {
+        return []
+      } else {
+        return this.allData.type.filter(item => {
+          return item.key !== this.dataType
+        })
+      }
+    },
+    title() {
+      if (!this.allData) {
+        return ''
+      } else {
+        return this.allData[this.dataType].title
+      }
+    },
+    comStyle() {
+      return {
+        fontSize: this.titleFontSize + 'px'
+      }
+    },
+    marginStyle() {
+      return {
+        marginLeft: this.titleFontSize - 3 + 'px'
+      }
     }
   },
   mounted() {
@@ -23,7 +63,7 @@ export default {
   },
   methods: {
     initChart() {
-      this.chartInstance = this.$echarts.init(this.$refs.trend_ref)
+      this.chartInstance = this.$echarts.init(this.$refs.trend_ref, 'chalk')
       const initOption = {
         grid: {
           left: '3%',
@@ -33,7 +73,7 @@ export default {
           containLabel: true
         },
         tooltip: {
-          type: 'axis'
+          trigger: 'axis'
         },
         legend: {
           left: 20,
@@ -70,13 +110,13 @@ export default {
         'rgba(250,105,0,0)'
       ]
       const timeArr = this.allData.common.month
-      const valueArr = this.allData.map.data
+      const valueArr = this.allData[this.dataType].data
       const seriesArr = valueArr.map((item, index) => {
         return {
           name: item.name,
           type: 'line',
           data: item.data,
-          stack: 'map',
+          stack: this.dataType,
           areaStyle: {
             color: {
               type: 'linear',
@@ -110,14 +150,47 @@ export default {
       this.chartInstance.setOption(dataOption)
     },
     screenAdapter() {
-      const adapterOption = {}
+      const adapterOption = {
+        legend: {
+          itemWidth: this.titleFontSize,
+          itemHeight: this.titleFontSize,
+          itemGap: this.titleFontSize,
+          textStyle: {
+            fontSize: this.titleFontSize / 2
+          }
+        }
+      }
       this.chartInstance.setOption(adapterOption)
       this.chartInstance.resize()
+    },
+    handleSelect(currentType) {
+      this.dataType = currentType
+      this.updateChart()
+      this.showChoice = false
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.title {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  z-index: 10;
+  color: white;
 
+  .title-icon {
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
+  .select-item {
+    cursor: pointer;
+  }
+
+  .select-con {
+    background-color: #222733;
+  }
+}
 </style>

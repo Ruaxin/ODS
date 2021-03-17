@@ -1,9 +1,9 @@
 <template>
   <div class="com-container">
-    <div class="title">
-      <span>{{ showTitle }}</span>
-      <span class="iconfont title-icon" @click="showChoice=!showChoice">&#xe6eb;</span>
-      <div class="select-con" v-show="showChoice">
+    <div class="title" :style="comStyle">
+      <span>{{ '▎ ' + showTitle }}</span>
+      <span class="iconfont title-icon" :style="comStyle" @click="showChoice=!showChoice">&#xe6eb;</span>
+      <div class="select-con" v-show="showChoice" :style="marginStyle">
         <div class="select-item" v-for="item in selectTypes" :key="item.key" @click="handleSelect(item.key)">
           {{ item.text }}
         </div>
@@ -20,7 +20,8 @@ export default {
       chartInstance: null,
       allData: null,
       showChoice: false, // 是否显示可选性
-      choiceType: 'map' // 显示数据类型
+      choiceType: 'map', // 显示数据类型
+      titleFontSize: 0
     }
   },
   mounted() {
@@ -47,6 +48,17 @@ export default {
         return []
       } else {
         return this.allData[this.choiceType].title
+      }
+    },
+    // 设置给标题的样式
+    comStyle() {
+      return {
+        fontSize: this.titleFontSize + 'px'
+      }
+    },
+    marginStyle() {
+      return {
+        marginLeft: this.titleFontSize - 3 + 'px'
       }
     }
   },
@@ -142,7 +154,17 @@ export default {
       this.chartInstance.setOption(dataOption)
     },
     screenAdapter() {
-      const adapterOption = {}
+      this.titleFontSize = this.$refs.trend_ref.offsetWidth / 100 * 3.6
+      const adapterOption = {
+        legend: {
+          itemWidth: this.titleFontSize,
+          itemHeight: this.titleFontSize,
+          itemGap: this.titleFontSize,
+          textStyle: {
+            fontSize: this.titleFontSize / 2
+          }
+        }
+      }
       this.chartInstance.setOption(adapterOption)
       this.chartInstance.resize()
     },
@@ -170,6 +192,10 @@ export default {
 
   .select-item {
     cursor: pointer;
+  }
+
+  .select-con {
+    background-color: #222733;
   }
 
 }

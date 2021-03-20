@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
@@ -22,9 +24,16 @@ export default {
     window.removeEventListener('resize', this.screenAdapter)
   },
   methods: {
-    initChart() {
+    async initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.map_ref)
-      const initOption = {}
+      const {data: ret} = await axios.get('http://localhost:8999/static/map/china.json')
+      this.$echarts.registerMap('china', ret)
+      const initOption = {
+        geo: {
+          type: 'map',
+          map: 'china'
+        }
+      }
       this.chartInstance.setOption(initOption)
     },
     async getData() {

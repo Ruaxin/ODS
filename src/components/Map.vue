@@ -37,10 +37,32 @@ export default {
       this.chartInstance.setOption(initOption)
     },
     async getData() {
+      // 获取散点数据
+      const {data: ret} = await this.$http.get('map')
+      this.allData = ret
       this.updateChart()
     },
     updateChart() {
-      const dataOption = {}
+      // 图例数据
+      const legendArr = this.allData.map(item => {
+        return item.name
+      })
+      const seriesArr = this.allData.map(item => {
+        // return的这个对象就代表的是一个类别下的所有散点数据
+        // 如果想在地图中显示散点的数据，需要给散点的图表增加一个配置，coordinateSystem:geo
+        return {
+          type: 'effectScatter',
+          name: item.name,
+          data: item.children,
+          coordinateSystem: 'geo'
+        }
+      })
+      const dataOption = {
+        series: seriesArr,
+        legend: {
+          data: legendArr
+        }
+      }
       this.chartInstance.setOption(dataOption)
     },
     screenAdapter() {

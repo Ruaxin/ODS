@@ -25,13 +25,29 @@ export default {
   },
   methods: {
     async initChart() {
-      this.chartInstance = this.$echarts.init(this.$refs.map_ref)
+      this.chartInstance = this.$echarts.init(this.$refs.map_ref, 'chalk')
       const {data: ret} = await axios.get('http://localhost:8999/static/map/china.json')
       this.$echarts.registerMap('china', ret)
       const initOption = {
+        title: {
+          text: '▎ 商家分布',
+          left: 20,
+          top: 20
+        },
         geo: {
           type: 'map',
-          map: 'china'
+          map: 'china',
+          top: '5%',
+          bottom: '5%',
+          itemStyle: {
+            areaColor: '#1f4955',
+            borderColor: '#333'
+          }
+        },
+        legend: {
+          left: '5%',
+          bottom: '5%',
+          orient: 'vertical'
         }
       }
       this.chartInstance.setOption(initOption)
@@ -52,6 +68,10 @@ export default {
         // 如果想在地图中显示散点的数据，需要给散点的图表增加一个配置，coordinateSystem:geo
         return {
           type: 'effectScatter',
+          rippleEffect: {
+            scale: 5,
+            brushType: 'stroke' // 空心效果
+          },
           name: item.name,
           data: item.children,
           coordinateSystem: 'geo'

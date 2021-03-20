@@ -34,7 +34,6 @@ export default {
       const initOption = {
         title: {
           text: '▎ 商家销售统计',
-          textStyle: {},
           left: 20,
           top: 20
         },
@@ -153,7 +152,7 @@ export default {
     },
     // 自适应屏幕大小
     screenAdapter() {
-      const titleFontSize = this.$refs.seller_ref.offsetWidth / 100 * 4.6
+      const titleFontSize = this.$refs.seller_ref.offsetWidth / 100 * 3.6
       const adapterOption = {
         title: {
           textStyle: {

@@ -26,46 +26,18 @@ export default {
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.rank_ref, 'chalk')
       // 对图表初始化配置的控制
-      const initOption = {
-        xAxis: {
-          type: 'category'
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [{
-          type: 'bar'
-        }]
-      }
+      const initOption = {}
       this.chartInstance.setOption(initOption)
     },
     // 获取服务器的数据
     async getData() {
       const {data: ret} = await this.$http.get('rank')
       this.allData = ret
-      this.allData.sort((a, b) => {
-        return b.value - a.value
-      })
       this.updateChart()
     },
     // 更新图表
     updateChart() {
-      // 省份数组
-      const provinceArr = this.allData.map(item => {
-        return item.name
-      })
-      // 销售金额
-      const valueArr = this.allData.map(item => {
-        return item.value
-      })
-      const dataOption = {
-        xAxis: {
-          data: provinceArr
-        },
-        series: [{
-          data: valueArr
-        }]
-      }
+      const dataOption = {}
       this.chartInstance.setOption(dataOption)
     },
     // 自适应屏幕大小

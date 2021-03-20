@@ -1,17 +1,20 @@
 <template>
-  <div class="com-container">
+  <div class="com-container" @dblclick="revertMap">
     <div class="com-chart" ref="map_ref"></div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+// 转换中文名字的省份
+import {getProvinceMapInfo} from '@/utils/map_utils.js'
 
 export default {
   data() {
     return {
       chartInstance: null,
-      allData: null
+      allData: null,
+      mapData: {}
     }
   },
   mounted() {
@@ -51,6 +54,26 @@ export default {
         }
       }
       this.chartInstance.setOption(initOption)
+      this.chartInstance.on('click', async arg => {
+        // arg.name得到所点击的省份，这个省份是中文的
+        const provinceInfo = getProvinceMapInfo(arg.name)
+        // 判断点击的这个名字是否有对应的json
+        if (!(provinceInfo.path === '/static/map/province/undefined.json')) {
+          // 获取这个省份的地图矢量数据
+          // 判断当前所点击的这个省份的地图矢量数据在mapData中是否存在
+          if (!this.mapData[provinceInfo.key]) {
+            const {data: ret} = await axios.get('http://localhost:8999' + provinceInfo.path)
+            this.mapData[provinceInfo.key] = ret
+            this.$echarts.registerMap(provinceInfo.key, ret)
+          }
+          const changeOption = {
+            geo: {
+              map: provinceInfo.key
+            }
+          }
+          this.chartInstance.setOption(changeOption)
+        }
+      })
     },
     async getData() {
       // 获取散点数据
@@ -104,6 +127,14 @@ export default {
       }
       this.chartInstance.setOption(adapterOption)
       this.chartInstance.resize()
+    },
+    revertMap() {
+      const revertOption = {
+        geo: {
+          map: 'china'
+        }
+      }
+      this.chartInstance.setOption(revertOption)
     }
   }
 }

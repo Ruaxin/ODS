@@ -154,8 +154,20 @@ export default {
     },
     // 自适应屏幕大小
     screenAdapter() {
-      // const titleFontSize = this.$refs.rank_ref.offsetWidth / 100 * 3.6
-      const adapterOption = {}
+      const titleFontSize = this.$refs.rank_ref.offsetWidth / 100 * 4.6
+      const adapterOption = {
+        title: {
+          textStyle: {
+            fontSize: titleFontSize
+          }
+        },
+        series: [{
+          barWidth: titleFontSize,
+          itemStyle: {
+            barBorderRadius: [titleFontSize / 2, titleFontSize / 2, 0, 0]
+          }
+        }]
+      }
       this.chartInstance.setOption(adapterOption)
       // 调用resize方法
       this.chartInstance.resize()

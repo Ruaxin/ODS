@@ -10,6 +10,9 @@ export default {
     return {
       chartInstance: null,
       allData: null,
+      startValue: 0, // 区域缩放的起点值
+      endValue: 9, // 区域缩放的终点值
+      timeId: null
     }
   },
   mounted() {
@@ -20,6 +23,7 @@ export default {
   },
   destroyed() {
     window.removeEventListener('resize', this.screenAdapter)
+    clearInterval(this.timeId)
   },
   methods: {
     // 初始化echartsInstance对象
@@ -53,6 +57,12 @@ export default {
         }]
       }
       this.chartInstance.setOption(initOption)
+      this.chartInstance.on('mouseover', () => {
+        clearInterval(this.timeId)
+      })
+      this.chartInstance.on('mouseout', () => {
+        this.startInterval()
+      })
     },
     // 获取服务器的数据
     async getData() {
@@ -62,6 +72,7 @@ export default {
         return b.value - a.value
       })
       this.updateChart()
+      this.startInterval()
     },
     // 更新图表
     updateChart() {
@@ -81,6 +92,11 @@ export default {
       const dataOption = {
         xAxis: {
           data: provinceArr
+        },
+        dataZoom: {
+          show: false,
+          startValue: this.startValue,
+          endValue: this.endValue
         },
         series: [{
           data: valueArr,
@@ -143,6 +159,20 @@ export default {
       this.chartInstance.setOption(adapterOption)
       // 调用resize方法
       this.chartInstance.resize()
+    },
+    startInterval() {
+      if (this.timeId) {
+        clearInterval(this.timeId)
+      }
+      this.timeId = setInterval(() => {
+        this.startValue++
+        this.endValue++
+        if (this.endValue > this.allData.length - 1) {
+          this.startValue = 0
+          this.endValue = 9
+        }
+        this.updateChart()
+      }, 2000)
     }
   }
 }

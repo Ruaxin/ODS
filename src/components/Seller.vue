@@ -152,7 +152,7 @@ export default {
     },
     // 自适应屏幕大小
     screenAdapter() {
-      const titleFontSize = this.$refs.seller_ref.offsetWidth / 100 * 6.6
+      const titleFontSize = this.$refs.seller_ref.offsetWidth / 100 * 4.6
       const adapterOption = {
         title: {
           textStyle: {

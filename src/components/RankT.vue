@@ -10,6 +10,9 @@ export default {
     return {
       chartInstance: null,
       allData: null,
+      timeId: null,
+      startValue: 0,
+      endValue: 9
     }
   },
   mounted() {
@@ -20,6 +23,7 @@ export default {
   },
   destroyed() {
     window.removeEventListener('resize', this.screenAdapter)
+    clearInterval(this.timeId)
   },
   methods: {
     // 初始化echartsInstance对象
@@ -79,6 +83,11 @@ export default {
       const dataOption = {
         xAxis: {
           data: provinceArr
+        },
+        dataZoom: {
+          show: true,
+          startValue: this.startValue,
+          endValue: this.endValue
         },
         series: [{
           data: valueArr,
@@ -141,6 +150,20 @@ export default {
       this.chartInstance.setOption(adapterOption)
       // 调用resize方法
       this.chartInstance.resize()
+    },
+    startInterval() {
+      if (this.timeId) {
+        clearInterval(this.timeId)
+      }
+      this.timeId = setInterval(() => {
+        if (this.endValue > this.allData.length - 1) {
+          this.startValue = 0
+          this.endValue = 9
+        }
+        this.startValue++
+        this.endValue++
+        this.updateChart()
+      }, 2000)
     }
   }
 }

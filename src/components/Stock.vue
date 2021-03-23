@@ -37,7 +37,32 @@ export default {
     },
     // 更新图表
     updateChart() {
-      const dataOption = {}
+      const centerArr = [
+        ['18%', '40%'],
+        ['50%', '40%'],
+        ['82%', '40%'],
+        ['34%', '75%'],
+        ['66%', '75%'],
+      ]
+      const showData = this.allData.slice(0, 5)
+      const seriesArr = showData.map((item, index) => {
+        return {
+          type: 'pie',
+          radius: [110, 100],
+          center: centerArr[index],
+          data: [
+            {
+              value: item.sales
+            },
+            {
+              value: item.stock
+            }
+          ]
+        }
+      })
+      const dataOption = {
+        series: seriesArr
+      }
       this.chartInstance.setOption(dataOption)
     },
     // 自适应屏幕大小

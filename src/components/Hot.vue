@@ -93,7 +93,7 @@ export default {
     },
     // 获取服务器的数据
     async getData() {
-      const {data: ret} = await this.$http.get('hotproduct')
+      const {data: ret} = await this.$http.get('hotproduct.json')
       this.allData = ret
       this.updateChart()
     },

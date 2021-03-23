@@ -77,7 +77,7 @@ export default {
     },
     async getData() {
       // 获取散点数据
-      const {data: ret} = await this.$http.get('map')
+      const {data: ret} = await this.$http.get('map.json')
       this.allData = ret
       this.updateChart()
     },

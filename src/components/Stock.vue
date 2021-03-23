@@ -46,7 +46,7 @@ export default {
     },
     // 获取服务器的数据
     async getData() {
-      const {data: ret} = await this.$http.get('stock')
+      const {data: ret} = await this.$http.get('stock.json')
       this.allData = ret
       this.updateChart()
       this.startInterval()

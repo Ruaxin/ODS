@@ -102,7 +102,7 @@ export default {
     },
     // 获取服务器的数据
     async getData() {
-      const {data: ret} = await this.$http.get('seller')
+      const {data: ret} = await this.$http.get('seller.json')
       this.allData = ret
       // 对数据进行排序
       this.allData.sort((a, b) => {

@@ -93,7 +93,7 @@ export default {
       this.chartInstance.setOption(initOption)
     },
     async getData() {
-      const {data: ret} = await this.$http.get('trend')
+      const {data: ret} = await this.$http.get('trend.json')
       this.allData = ret
       this.updateChart()
     },

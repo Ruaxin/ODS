@@ -66,7 +66,7 @@ export default {
     },
     // 获取服务器的数据
     async getData() {
-      const {data: ret} = await this.$http.get('rank')
+      const {data: ret} = await this.$http.get('rank.json')
       this.allData = ret
       this.allData.sort((a, b) => {
         return b.value - a.value

@@ -118,8 +118,53 @@ export default {
     },
     // 自适应屏幕大小
     screenAdapter() {
-      // const titleFontSize = this.$refs.stock_ref.offsetWidth / 100 * 3.6
-      const adapterOption = {}
+      const titleFontSize = this.$refs.stock_ref.offsetWidth / 100 * 3.6
+      const innerRadius = titleFontSize * 2
+      const outterRadius = innerRadius * 1.125
+      const adapterOption = {
+        title: {
+          textStyle: {
+            fontSize: titleFontSize
+          }
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: [outterRadius, innerRadius],
+            label: {
+              fontSize: titleFontSize / 2
+            }
+          },
+          {
+            type: 'pie',
+            radius: [outterRadius, innerRadius],
+            label: {
+              fontSize: titleFontSize / 2
+            }
+          },
+          {
+            type: 'pie',
+            radius: [outterRadius, innerRadius],
+            label: {
+              fontSize: titleFontSize / 2
+            }
+          },
+          {
+            type: 'pie',
+            radius: [outterRadius, innerRadius],
+            label: {
+              fontSize: titleFontSize / 2
+            }
+          },
+          {
+            type: 'pie',
+            radius: [outterRadius, innerRadius],
+            label: {
+              fontSize: titleFontSize / 2
+            }
+          },
+        ]
+      }
       this.chartInstance.setOption(adapterOption)
       // 调用resize方法
       this.chartInstance.resize()

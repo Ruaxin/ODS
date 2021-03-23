@@ -26,7 +26,13 @@ export default {
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.stock_ref, 'chalk')
       // 对图表初始化配置的控制
-      const initOption = {}
+      const initOption = {
+        title: {
+          text: '▎ 库存和销量分析',
+          left: 20,
+          top: 20
+        },
+      }
       this.chartInstance.setOption(initOption)
     },
     // 获取服务器的数据
@@ -44,18 +50,51 @@ export default {
         ['34%', '75%'],
         ['66%', '75%'],
       ]
+      const colorArr = [
+        ['#4FF778', '#0BA82C'],
+        ['#E5DD45', '#E8B11C'],
+        ['#E8821C', '#E55445'],
+        ['#5052EE', '#AB6EE5'],
+        ['#23E5E5', '#2E72BF'],
+      ]
       const showData = this.allData.slice(0, 5)
       const seriesArr = showData.map((item, index) => {
         return {
           type: 'pie',
           radius: [110, 100],
           center: centerArr[index],
+          hoverAnimation: false, // 关闭鼠标移入到饼图时的动画效果
+          labelLine: {
+            show: false //隐藏指示线
+          },
+          label: {
+            position: 'center',
+            color: colorArr[index][0]
+          },
           data: [
             {
-              value: item.sales
+              name: item.name + '\n' + item.sales,
+              value: item.sales,
+              itemStyle: {
+                color: {
+                  type: 'linear',
+                  x: 0,
+                  y: 1,
+                  x2: 0,
+                  y2: 0,
+                  colorStops: [{
+                    offset: 0, color: colorArr[index][0] // 0% 处的颜色
+                  }, {
+                    offset: 1, color: colorArr[index][1] // 100% 处的颜色
+                  }],
+                }
+              }
             },
             {
-              value: item.stock
+              value: item.stock,
+              itemStyle: {
+                color: 'grey'
+              }
             }
           ]
         }

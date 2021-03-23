@@ -1,9 +1,9 @@
 <template>
   <div class="com-container">
     <div class="com-chart" ref="hot_ref"></div>
-    <span class="iconfont arr-left" @click="toLeft">&#xe6ef;</span>
-    <span class="iconfont arr-right" @click="toRight">&#xe6ed;</span>
-    <span class="cat-name">{{ catName }}</span>
+    <span class="iconfont arr-left" @click="toLeft" :style="comStyle">&#xe6ef;</span>
+    <span class="iconfont arr-right" @click="toRight" :style="comStyle">&#xe6ed;</span>
+    <span class="cat-name" :style="comStyle">{{ catName }}</span>
   </div>
 </template>
 
@@ -13,7 +13,8 @@ export default {
     return {
       chartInstance: null,
       allData: null,
-      currentIndex: 0 // 当前所展示出的一级分类数据
+      currentIndex: 0, // 当前所展示出的一级分类数据
+      titleFontSize: 0
     }
   },
   mounted() {
@@ -32,6 +33,11 @@ export default {
       } else {
         return this.allData[this.currentIndex].name
       }
+    },
+    comStyle() {
+      return {
+        fontSize: this.titleFontSize + 'px'
+      }
     }
   },
   methods: {
@@ -46,7 +52,7 @@ export default {
           top: 20
         },
         legend: {
-          top: '5%',
+          top: '15%',
           icon: 'circle'
         },
         tooltip: {
@@ -117,8 +123,28 @@ export default {
     },
     // 自适应屏幕大小
     screenAdapter() {
-      // const titleFontSize = this.$refs.rank_ref.offsetWidth / 100 * 3.6
-      const adapterOption = {}
+      this.titleFontSize = this.$refs.hot_ref.offsetWidth / 100 * 3.6
+      const adapterOption = {
+        title: {
+          textStyle: {
+            fontSize: this.titleFontSize
+          }
+        },
+        legend: {
+          itemWidth: this.titleFontSize / 2,
+          itemHeight: this.titleFontSize / 2,
+          itemGap: this.titleFontSize / 2,
+          textStyle: {
+            fontSize: this.titleFontSize / 2
+          }
+        },
+        series: [
+          {
+            radius: this.titleFontSize * 4.5,
+            center: ['50%', '60%']
+          }
+        ]
+      }
       this.chartInstance.setOption(adapterOption)
       // 调用resize方法
       this.chartInstance.resize()

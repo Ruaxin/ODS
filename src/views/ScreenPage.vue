@@ -1,12 +1,12 @@
 <template>
-  <div class="screen-container">
+  <div class="screen-container" :style="containerStyle">
     <header class="screen-header">
       <div>
-        <img src="/static/img/header_border_dark.png" alt="">
+        <img :src="headerSrc" alt="">
       </div>
       <span class="title">电商平台实时监控系统</span>
       <div class="title-right">
-        <img src="/static/img/qiehuan_dark.png" alt="" class="qiehuan">
+        <img :src="themeSrc" alt="" class="qiehuan" @click="handleChangeTheme">
         <span class="datetime">2222-02-22 22:22:22</span>
       </div>
     </header>
@@ -76,6 +76,8 @@ import Rank from '@/components/Rank.vue'
 import Seller from '@/components/Seller.vue'
 import Stock from '@/components/Stock.vue'
 import Trend from '@/components/Trend.vue'
+import {mapState} from 'vuex'
+import {getThemeValue} from '@/utils/theme_utils.js'
 
 export default {
   data() {
@@ -99,6 +101,21 @@ export default {
     Stock,
     Trend
   },
+  computed: {
+    headerSrc() {
+      return '/static/img/' + getThemeValue(this.theme).headerBorderSrc
+    },
+    themeSrc() {
+      return '/static/img/' + getThemeValue(this.theme).themeSrc
+    },
+    containerStyle() {
+      return {
+        backgroundColor: getThemeValue(this.theme).backgroundColor,
+        color: getThemeValue(this.theme).titleColor,
+      }
+    },
+    ...mapState(['theme'])
+  },
   methods: {
     changeSize(chartName) {
       // 改变fullScreenStatus的数据
@@ -107,6 +124,9 @@ export default {
       this.$nextTick(() => {
         this.$refs[chartName].screenAdapter()
       })
+    },
+    handleChangeTheme() {
+      this.$store.commit('changeTheme')
     }
   }
 }

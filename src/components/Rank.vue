@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
 export default {
   data() {
     return {
@@ -25,10 +27,21 @@ export default {
     window.removeEventListener('resize', this.screenAdapter)
     clearInterval(this.timeId)
   },
+  computed: {
+    ...mapState(['theme'])
+  },
+  watch: {
+    theme() {
+      this.chartInstance.dispose()
+      this.initChart()
+      this.screenAdapter()
+      this.updateChart()
+    }
+  },
   methods: {
     // 初始化echartsInstance对象
     initChart() {
-      this.chartInstance = this.$echarts.init(this.$refs.rank_ref, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.rank_ref, this.theme)
       // 对图表初始化配置的控制
       const initOption = {
         title: {

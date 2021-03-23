@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+import {getThemeValue} from '@/utils/theme_utils.js'
 export default {
   data() {
     return {
@@ -36,14 +38,24 @@ export default {
     },
     comStyle() {
       return {
-        fontSize: this.titleFontSize + 'px'
+        fontSize: this.titleFontSize + 'px',
+        color:getThemeValue(this.theme).titleColor
       }
+    },
+    ...mapState(['theme'])
+  },
+  watch: {
+    theme() {
+      this.chartInstance.dispose() // 销毁图表
+      this.initChart()
+      this.screenAdapter()
+      this.updateChart()
     }
   },
   methods: {
     // 初始化echartsInstance对象
     initChart() {
-      this.chartInstance = this.$echarts.init(this.$refs.hot_ref, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.hot_ref, this.theme)
       // 对图表初始化配置的控制
       const initOption = {
         title: {

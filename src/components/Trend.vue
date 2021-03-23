@@ -14,6 +14,9 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+import {getThemeValue} from '@/utils/theme_utils.js'
+
 export default {
   data() {
     return {
@@ -53,18 +56,28 @@ export default {
     // 设置给标题的样式
     comStyle() {
       return {
-        fontSize: this.titleFontSize + 'px'
+        fontSize: this.titleFontSize + 'px',
+        color:getThemeValue(this.theme).titleColor
       }
     },
     marginStyle() {
       return {
-        marginLeft: this.titleFontSize - 3 + 'px'
+        marginLeft: this.titleFontSize - 3 + 'px',
       }
+    },
+    ...mapState(['theme'])
+  },
+  watch: {
+    theme() {
+      this.chartInstance.dispose()
+      this.initChart()
+      this.screenAdapter()
+      this.updateChart()
     }
   },
   methods: {
     initChart() {
-      this.chartInstance = this.$echarts.init(this.$refs.trend_ref, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.trend_ref, this.theme)
       const initOption = {
         grid: {
           left: '3%',

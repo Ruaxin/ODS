@@ -8,6 +8,7 @@
 import axios from 'axios'
 // 转换中文名字的省份
 import {getProvinceMapInfo} from '@/utils/map_utils.js'
+import {mapState} from 'vuex'
 
 export default {
   data() {
@@ -26,9 +27,20 @@ export default {
   destroyed() {
     window.removeEventListener('resize', this.screenAdapter)
   },
+  computed: {
+    ...mapState(['theme'])
+  },
+  watch: {
+    theme() {
+      this.chartInstance.dispose()
+      this.initChart()
+      this.screenAdapter()
+      this.updateChart()
+    }
+  },
   methods: {
     async initChart() {
-      this.chartInstance = this.$echarts.init(this.$refs.map_ref, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.map_ref, this.theme)
       const {data: ret} = await axios.get('http://localhost:8999/static/map/china.json')
       this.$echarts.registerMap('china', ret)
       const initOption = {

@@ -10,6 +10,8 @@ export default {
     return {
       chartInstance: null,
       allData: null,
+      currentIndex: 0,
+      timerId: null
     }
   },
   mounted() {
@@ -19,6 +21,7 @@ export default {
     this.screenAdapter()
   },
   destroyed() {
+    clearInterval(this.timerId)
     window.removeEventListener('resize', this.screenAdapter)
   },
   methods: {
@@ -34,15 +37,24 @@ export default {
         },
       }
       this.chartInstance.setOption(initOption)
+      this.chartInstance.on('mouseover', () => {
+        clearInterval(this.timerId)
+      })
+      this.chartInstance.on('mouseout', () => {
+        this.startInterval()
+      })
     },
     // 获取服务器的数据
     async getData() {
       const {data: ret} = await this.$http.get('stock')
       this.allData = ret
       this.updateChart()
+      this.startInterval()
     },
     // 更新图表
     updateChart() {
+      const start = this.currentIndex * 5
+      const end = this.currentIndex * 5 + 5
       const centerArr = [
         ['18%', '40%'],
         ['50%', '40%'],
@@ -57,7 +69,7 @@ export default {
         ['#5052EE', '#AB6EE5'],
         ['#23E5E5', '#2E72BF'],
       ]
-      const showData = this.allData.slice(0, 5)
+      const showData = this.allData.slice(start, end)
       const seriesArr = showData.map((item, index) => {
         return {
           type: 'pie',
@@ -111,7 +123,19 @@ export default {
       this.chartInstance.setOption(adapterOption)
       // 调用resize方法
       this.chartInstance.resize()
-    }
+    },
+    startInterval() {
+      if (this.timerId) {
+        clearInterval(this.timerId)
+      }
+      this.timerId = setInterval(() => {
+        this.currentIndex++
+        if (this.currentIndex > 1) {
+          this.currentIndex = 0
+        }
+        this.updateChart()
+      }, 5000)
+    },
   }
 }
 </script>

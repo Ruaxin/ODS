@@ -10,6 +10,7 @@
 <script>
 import {mapState} from 'vuex'
 import {getThemeValue} from '@/utils/theme_utils.js'
+
 export default {
   data() {
     return {
@@ -39,7 +40,7 @@ export default {
     comStyle() {
       return {
         fontSize: this.titleFontSize + 'px',
-        color:getThemeValue(this.theme).titleColor
+        color: getThemeValue(this.theme).titleColor
       }
     },
     ...mapState(['theme'])

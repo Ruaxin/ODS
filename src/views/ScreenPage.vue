@@ -14,17 +14,17 @@
       <section class="screen-left">
         <div id="left-top" :class="[fullScreenStatus.trend?'fullscreen':'']">
           <!--          销量趋势表-->
-          <Trend></Trend>
+          <Trend ref="trend"></Trend>
           <div class="resize">
-            <span class="iconfont icon-expand-alt"
+            <span @click="changeSize('trend')"
                   :class="['iconfont', fullScreenStatus.trend ? 'icon-compress-alt' : 'icon-expand-alt']"></span>
           </div>
         </div>
         <div id="left-bottom" :class="[fullScreenStatus.seller?'fullscreen':'']">
           <!--          商家销售金额表-->
-          <Seller></Seller>
+          <Seller ref="seller"></Seller>
           <div class="resize">
-          <span class="iconfont icon-expand-alt"
+          <span @click="changeSize('seller')"
                 :class="['iconfont', fullScreenStatus.seller ? 'icon-compress-alt' : 'icon-expand-alt']"></span>
           </div>
         </div>
@@ -32,17 +32,17 @@
       <section class="screen-middle">
         <div id="middle-top" :class="[fullScreenStatus.map?'fullscreen':'']">
           <!--          商家分布图表-->
-          <Map></Map>
+          <Map ref="map"></Map>
           <div class="resize">
-          <span class="iconfont icon-expand-alt"
+          <span @click="changeSize('map')"
                 :class="['iconfont', fullScreenStatus.map ? 'icon-compress-alt' : 'icon-expand-alt']"></span>
           </div>
         </div>
         <div id="middle-bottom" :class="[fullScreenStatus.rank?'fullscreen':'']">
           <!--          地区销量排行图表-->
-          <Rank></Rank>
+          <Rank ref="rank"></Rank>
           <div class="resize">
-          <span class="iconfont icon-expand-alt"
+          <span @click="changeSize('rank')"
                 :class="['iconfont', fullScreenStatus.rank ? 'icon-compress-alt' : 'icon-expand-alt']"></span>
           </div>
         </div>
@@ -50,17 +50,17 @@
       <section class="screen-right">
         <div id="right-top" :class="[fullScreenStatus.hot?'fullscreen':'']">
           <!--          热销商品占比表-->
-          <Hot></Hot>
+          <Hot ref="hot"></Hot>
           <div class="resize">
-          <span class="iconfont icon-expand-alt"
+          <span @click="changeSize('hot')"
                 :class="['iconfont', fullScreenStatus.hot ? 'icon-compress-alt' : 'icon-expand-alt']"></span>
           </div>
         </div>
         <div id="right-bottom" :class="[fullScreenStatus.stock?'fullscreen':'']">
           <!--          库存销量分析表-->
-          <Stock></Stock>
+          <Stock ref="stock"></Stock>
           <div class="resize">
-          <span class="iconfont icon-expand-alt"
+          <span @click="changeSize('stock')"
                 :class="['iconfont', fullScreenStatus.stock ? 'icon-compress-alt' : 'icon-expand-alt']"></span>
           </div>
         </div>
@@ -99,6 +99,16 @@ export default {
     Stock,
     Trend
   },
+  methods: {
+    changeSize(chartName) {
+      // 改变fullScreenStatus的数据
+      this.fullScreenStatus[chartName] = !this.fullScreenStatus[chartName]
+      // 调用screenAdapter方法,需要用nextTick延迟
+      this.$nextTick(() => {
+        this.$refs[chartName].screenAdapter()
+      })
+    }
+  }
 }
 </script>
 

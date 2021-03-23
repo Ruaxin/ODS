@@ -40,8 +40,47 @@ export default {
       this.chartInstance = this.$echarts.init(this.$refs.hot_ref, 'chalk')
       // 对图表初始化配置的控制
       const initOption = {
+        title: {
+          text: '▎ 热销商品占比',
+          left: 20,
+          top: 20
+        },
+        legend: {
+          top: '5%',
+          icon: 'circle'
+        },
+        tooltip: {
+          show: true,
+          formatter: arg => {
+            const thirdCategory = arg.data.children
+            // 计算出所有三级分类的数值总和
+            let total = 0
+            thirdCategory.forEach(item => {
+              total += item.value
+            })
+            let retStr = ''
+            thirdCategory.forEach(item => {
+              retStr += `${item.name}:${parseInt(item.value / total * 100) + '%'}<br/>`
+            })
+            return retStr
+          }
+        },
         series: [
-          {type: 'pie'}
+          {
+            type: 'pie',
+            label: {
+              show: false
+            },
+            // 高亮模式
+            emphasis: {
+              label: {
+                show: true
+              },
+              labelLine: {
+                show: false
+              }
+            }
+          }
         ]
       }
       this.chartInstance.setOption(initOption)
@@ -60,7 +99,8 @@ export default {
       const seriesData = this.allData[this.currentIndex].children.map(item => {
         return {
           name: item.name,
-          value: item.value
+          value: item.value,
+          children: item.children
         }
       })
       const dataOption = {
@@ -108,6 +148,7 @@ export default {
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
+  color: white;
 }
 
 .arr-right {
@@ -116,11 +157,13 @@ export default {
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
+  color: white;
 }
 
 .cat-name {
   position: absolute;
   left: 80%;
   bottom: 20px;
+  color: white;
 }
 </style>
